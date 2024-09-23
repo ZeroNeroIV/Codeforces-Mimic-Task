@@ -17,17 +17,11 @@ public class SignUpController {
 
     @PostMapping
     public ResponseEntity<?> addNewUser(@RequestBody SignUpDto signUpDto) {
-        if ((signUpDto.getPassword() == null || signUpDto.getPassword().isEmpty()) ||
-                (signUpDto.getEmail() == null || signUpDto.getEmail().isEmpty()) ||
-                (signUpDto.getUsername() == null) || signUpDto.getUsername().isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
         try {
             signUpService.saveUser(signUpDto);
+            return ResponseEntity.ok("Account Created Successfully");
         } catch (Exception e) {
             return ResponseEntity.ok(e.getMessage());
         }
-
-        return ResponseEntity.ok("Account Created Successfully");
     }
 }

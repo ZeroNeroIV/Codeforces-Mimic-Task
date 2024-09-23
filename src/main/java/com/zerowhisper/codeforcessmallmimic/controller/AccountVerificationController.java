@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/auth/account-verification")
+@RequestMapping("/account-verification")
 public class AccountVerificationController {
     private final AccountVerificationService accountVerificationService;
 

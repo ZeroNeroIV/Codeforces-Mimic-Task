@@ -10,13 +10,17 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class SignUpService {
-
-
     private final UserAccountRepository userAccountRepository;
     private final PasswordEncoder passwordEncoder;
     private final AccountVerificationService accountVerificationService;
 
     public void saveUser(SignUpDto newUser) {
+        if ((newUser.getPassword() == null || newUser.getPassword().isEmpty()) ||
+                (newUser.getEmail() == null || newUser.getEmail().isEmpty()) ||
+                (newUser.getUsername() == null) || newUser.getUsername().isEmpty()
+        ) {
+            throw new RuntimeException("Invalid input.");
+        }
         UserAccount user = new UserAccount();
         user.setEmail(newUser.getEmail());
         user.setUsername(newUser.getUsername());
