@@ -2,6 +2,7 @@ package com.zerowhisper.codeforcessmallmimic.controller;
 
 import com.zerowhisper.codeforcessmallmimic.service.LogOutService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,8 +15,12 @@ public class LogOutController {
     private final LogOutService logOutService;
 
     @GetMapping
-    public void  logOutUser(@RequestHeader("token") String token){
-
-       logOutService.logout(token);
+    public ResponseEntity<String> logOutUser(@RequestHeader("Authorization") String token){
+        try {
+            logOutService.logOut(token);
+            return ResponseEntity.ok("Logged out successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

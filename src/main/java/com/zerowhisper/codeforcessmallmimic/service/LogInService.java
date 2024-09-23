@@ -63,6 +63,7 @@ public class LogInService {
 
         refreshToken.setRefreshToken(jwtService.generateRefreshToken(userAccount));
         refreshToken.setExpiresAt(new Date(System.currentTimeMillis() + RefreshToken.EXPIRATION_TIME));
+        refreshToken.setUserAccount(userAccount);
 
         String accessToken = jwtService.generateAccessToken(userAccount);
 

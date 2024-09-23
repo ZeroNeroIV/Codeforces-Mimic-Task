@@ -25,7 +25,7 @@ public class SignUpController {
         try {
             signUpService.saveUser(signUpDto);
         } catch (Exception e) {
-            return ResponseEntity.ok("Please Try Again");
+            return ResponseEntity.ok(e.getMessage());
         }
 
         return ResponseEntity.ok("Account Created Successfully");
