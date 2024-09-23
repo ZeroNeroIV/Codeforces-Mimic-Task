@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/auth/sign-up")
+@RequestMapping("/sign-up")
 public class SignUpController {
     private final SignUpService signUpService;
 
@@ -25,7 +25,7 @@ public class SignUpController {
         try {
             signUpService.saveUser(signUpDto);
         } catch (Exception e) {
-            return ResponseEntity.ok("Please Try Again");
+            return ResponseEntity.ok(e.getMessage());
         }
 
         return ResponseEntity.ok("Account Created Successfully");

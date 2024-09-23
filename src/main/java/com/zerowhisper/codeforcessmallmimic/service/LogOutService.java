@@ -17,26 +17,29 @@ public class LogOutService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserAccountRepository userAccountRepository;
 
-    public void logout(String token) {
+    public void logOut(String token) {
+        String accessToken = token.replace("Bearer ", "");
 
-        String jwtToken = token.replace("Bearer ", "");
-        Optional<UserAccount> user = userAccountRepository.findByUsername(jwtService.getUsernameFromAccessToken(token));
+        Long userId = jwtService.getUserAccountIdFromAccessToken(accessToken);
+
+        Optional<UserAccount> user = userAccountRepository.findById(userId);
 
         if (user.isEmpty()) {
-            throw new RuntimeException("Invalid Token");
+            throw new RuntimeException("Invalid Token.\nNo such user.");
         }
 
-        if (!jwtService.isAccessTokenValid(token, user.get())) {
-            throw new RuntimeException("Invalid token. Please login again.");
+        UserAccount userAccount = user.get();
+
+        if (!jwtService.isAccessTokenValid(accessToken, userAccount)) {
+            throw new RuntimeException("Invalid token.\nToken is not valid.");
         }
 
-        Long id = jwtService.getUserAccountIdFromAccessToken(jwtToken);
-
-        if (refreshTokenRepository.findAllByUserId(id).isEmpty()) {
+        if (refreshTokenRepository.findAllByUserId(userId).isEmpty()) {
             throw new RuntimeException("No refresh tokens found for this user.");
         }
+
         SecurityContextHolder.clearContext();
-        refreshTokenRepository.deleteAllTokensByUserId(id);
+        refreshTokenRepository.deleteAllTokensByUserId(userId);
     }
 
 

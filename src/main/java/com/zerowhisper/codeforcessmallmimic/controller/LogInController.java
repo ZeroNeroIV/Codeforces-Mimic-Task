@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth/log-in")
+@RequestMapping("/log-in")
 public class LogInController {
     private final LogInService logInService;
 
     @PostMapping
-    public ResponseEntity<?> login(@RequestBody LogInDto log) {
+    public ResponseEntity<?> logIn(@RequestBody LogInDto log) {
         try {
-            logInService.makeLogin(log.getEmail(), log.getPassword());
-            return ResponseEntity.ok().build();
+            String accessToken = logInService.makeLogin(log.getEmail(), log.getPassword());
+            return ResponseEntity.ok(accessToken);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -6,9 +6,6 @@ import com.zerowhisper.codeforcessmallmimic.repository.RefreshTokenRepository;
 import com.zerowhisper.codeforcessmallmimic.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -45,10 +42,10 @@ public class LogInService {
         // Authenticate the user
         try {
             //Here it will compare the password matches
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userAccount.getUsername(), password));
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            Authentication authentication = authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(userAccount.getUsername(), password));
+//
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
 
             // User is not enabled
             if (!userAccount.isEnabled()) {
@@ -63,6 +60,7 @@ public class LogInService {
 
         refreshToken.setRefreshToken(jwtService.generateRefreshToken(userAccount));
         refreshToken.setExpiresAt(new Date(System.currentTimeMillis() + RefreshToken.EXPIRATION_TIME));
+        refreshToken.setUserAccount(userAccount);
 
         String accessToken = jwtService.generateAccessToken(userAccount);
 

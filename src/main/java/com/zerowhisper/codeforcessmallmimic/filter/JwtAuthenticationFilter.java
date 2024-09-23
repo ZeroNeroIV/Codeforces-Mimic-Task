@@ -1,5 +1,6 @@
 package com.zerowhisper.codeforcessmallmimic.filter;
 
+import com.zerowhisper.codeforcessmallmimic.dto.PrincipleDTO;
 import com.zerowhisper.codeforcessmallmimic.entity.UserAccount;
 import com.zerowhisper.codeforcessmallmimic.service.JwtService;
 import com.zerowhisper.codeforcessmallmimic.service.UserAccountService;
@@ -40,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             try {
                 if (jwtService.isAccessTokenExpired(token)) {
-                    filterChain.doFilter(request, response);
+//                    filterChain.doFilter(request, response);
                     return;
                 }
 
@@ -49,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserAccount userAccount = userAccountService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                            userAccount,
+                            new PrincipleDTO(userAccount.getUsername(), userAccount.getEmail()),
                             null,
                             userAccount.getAuthorities()
                     );
