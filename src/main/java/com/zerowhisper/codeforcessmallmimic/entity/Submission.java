@@ -4,8 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import java.security.Timestamp;
-import java.util.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Table
 @Entity
@@ -18,15 +19,22 @@ public class Submission {
     @Column(name = "submission_id")
     private Long submissionId;
 
-    //The Relation with userAccount table
+    // The Relation with userAccount table
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_account_id", nullable = false)
     private UserAccount userAccount;
 
-    //The Relation with problem Table
+    private Timestamp submitted_at;
+
+    // The Relation with problem Table
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
+
+    @PrePersist
+    protected void submitted_Code() {
+        submitted_at = Timestamp.valueOf(LocalDateTime.now());
+    }
 
     @Column(nullable = false, name = "is_finished")
     private Boolean isFinished;
@@ -40,14 +48,11 @@ public class Submission {
     @Column(nullable = false, name = "language_id")
     private Short languageId;
 
-    @Column(nullable = false, name = "user_output")
+    @Column(name = "user_output")
     private String userOutput;
 
-    @Column(nullable = false, name = "submitted_at")
-    private Date submittedAt;
-
     @Column(nullable = false, name = "submission_status")
-    private String submissionStatus;
+    private Integer submissionStatus;
 
     @Column(name = "time_taken")
     private Integer timeTaken;

@@ -21,7 +21,7 @@ public class Problem {
     @Column(nullable = false, name = "problem_statement")
     private String problemStatement;
 
-    @Column(nullable = false, name = "problem_input")
+    @Column(nullable = false, name = "time_limit")
     private Integer timeLimit;
 
     @Column(nullable = false, name = "memory_limit")
