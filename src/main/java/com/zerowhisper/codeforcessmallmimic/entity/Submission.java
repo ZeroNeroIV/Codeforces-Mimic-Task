@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.security.Timestamp;
+import java.util.Date;
 
 @Table
 @Entity
@@ -43,10 +44,10 @@ public class Submission {
     private String userOutput;
 
     @Column(nullable = false, name = "submitted_at")
-    private Timestamp submittedAt;
+    private Date submittedAt;
 
     @Column(nullable = false, name = "submission_status")
-    private Short submissionStatus;
+    private String submissionStatus;
 
     @Column(name = "time_taken")
     private Integer timeTaken;

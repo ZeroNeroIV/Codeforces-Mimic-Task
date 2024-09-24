@@ -29,7 +29,7 @@ public class ProblemController {
     }
 
     // TODO: Only admins can add problems
-
+//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<?> add(@RequestBody ProblemDto problem) {
         try {
@@ -40,7 +40,7 @@ public class ProblemController {
     }
 
     // TODO: Only admins can update problems
-
+//    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{problemId}")
     public ResponseEntity<?> update(@PathVariable Long problemId, @RequestBody ProblemDto problem) {
         try {
@@ -56,7 +56,7 @@ public class ProblemController {
     }
 
     // TODO: Only admins can delete problems
-
+//    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{problemId}")
     public ResponseEntity<?> delete(@PathVariable Long problemId) {
         try {
