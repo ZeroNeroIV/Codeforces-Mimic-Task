@@ -2,33 +2,39 @@ package com.zerowhisper.codeforcessmallmimic.controller;
 
 import com.zerowhisper.codeforcessmallmimic.dto.SubmissionDto;
 import com.zerowhisper.codeforcessmallmimic.service.SubmissionService;
-import lombok.AllArgsConstructor;
-
-import java.io.IOException;
-
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/submission")
 public class SubmissionController {
     private final SubmissionService submissionService;
 
     @PostMapping
-    // I used void because we wont send anything yet to the user
     public ResponseEntity<?> submitCode(@RequestBody SubmissionDto submissionDto) {
         try {
             return ResponseEntity
-                    .ok(submissionService.submitCode(submissionDto.getUserId(), submissionDto.getProblemId(),
+                    .ok(submissionService.submitCode(
+                            submissionDto.getUserId(),
+                            submissionDto.getProblemId(),
                             submissionDto.getCode(),
-                            submissionDto.getLanguageId()));
+                            submissionDto.getLanguageId())
+                    );
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/get-submission/{submissionId}")
+    public ResponseEntity<?> getSubmission(@PathVariable Long submissionId) {
+        try {
+            return ResponseEntity
+                    .ok(submissionService.getSubmission(submissionId));
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

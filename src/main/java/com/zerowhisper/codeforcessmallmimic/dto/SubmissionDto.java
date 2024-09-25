@@ -7,5 +7,5 @@ public class SubmissionDto {
    private Long userId;
    private Long problemId;
    private String code;
-   private short languageId; // --> convert it to based on the id ?
+   private Integer languageId; // --> convert it to based on the id ?
 }

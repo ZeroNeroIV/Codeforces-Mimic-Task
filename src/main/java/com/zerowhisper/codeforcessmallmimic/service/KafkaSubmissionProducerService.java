@@ -10,7 +10,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class KafkaSubmissionProducerService {
-    private final KafkaTemplate<String, Map<String, Object>> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Value("${kafka.topic.submission.name}")
     private String topicName;
@@ -18,4 +18,5 @@ public class KafkaSubmissionProducerService {
     public void sendSubmission(Map<String, Object> message) {
         kafkaTemplate.send(topicName, message);
     }
+
 }

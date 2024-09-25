@@ -4,14 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zerowhisper.codeforcessmallmimic.entity.Submission;
 import lombok.RequiredArgsConstructor;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.DefaultAsyncHttpClient;
+import org.asynchttpclient.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.Map;
 
 @Service
@@ -19,24 +18,35 @@ import java.util.Map;
 public class KafkaSubmissionConsumerService {
     private final ObjectMapper objectMapper;
     private final SubmissionService submissionService;
+    //! For websocket and kafka
+//    private final SimpMessagingTemplate messagingTemplate;
 
-    @KafkaListener(topics = "submission-topic", groupId = "submission-group")
-    public void listen(Map<String, Object> message) {
+    @Value("${judge0-api-key}")
+    private String judge0ApiKey;
+
+
+    @KafkaListener(topics = "${kafka.topic.submission.name}", groupId = "${kafka.group-id.submission.name}")
+    public void listen(String message) {
         try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI
-                            .create("https://judge0-ce.p.rapidapi.com/submissions/" +
-                                    message.get("token") +
-                                    "?base64_encoded=true&fields=*")
-                    )
-                    .header("x-rapidapi-key", "be259d5389mshdf767541cdc8812p1c7839jsnafdc65c31663")
-                    .header("x-rapidapi-host", "judge0-ce.p.rapidapi.com")
-                    .method("GET", HttpRequest.BodyPublishers.noBody())
-                    .build();
-            HttpClient client = HttpClient.newHttpClient();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            Map<?, ?> submissionDetails = objectMapper.readValue(message, Map.class);
+
+            Long submissionId = Long.valueOf(submissionDetails.get("submissionId").toString());
+            String token = submissionDetails.get("token").toString();
+            AsyncHttpClient client = new DefaultAsyncHttpClient();
+            String response = client.prepareGet("https://judge0-ce.p.rapidapi.com/submissions/" +
+                            token +
+                            "?base64_encoded=true&fields=*")
+                    .setHeader("x-rapidapi-key", judge0ApiKey)
+                    .setHeader("x-rapidapi-host", "judge0-ce.p.rapidapi.com")
+                    .execute()
+                    .toCompletableFuture()
+                    .thenApply(Response::getResponseBody)
+                    .exceptionally(throwable -> "Error: " + throwable.getMessage())
+                    .join();
             client.close();
-            processJudge0Response((Long) message.get("submissionId"), response.body());
+
+            System.out.println(response);
+            processJudge0Response(submissionId, response);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -67,6 +77,6 @@ public class KafkaSubmissionConsumerService {
     private void notifyUser(Submission submission) {
         // Example of how you might notify the user
         System.out.println("Notifying user about the result of submission " + submission.getSubmissionId());
-        // You could use WebSocket, email, or another service to notify the user
+        // You could use WebSocket to notify the user
     }
 }

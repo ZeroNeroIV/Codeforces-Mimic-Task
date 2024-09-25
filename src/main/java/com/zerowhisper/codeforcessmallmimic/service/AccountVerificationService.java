@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -26,14 +25,9 @@ public class AccountVerificationService {
 
         Verification newVerification = new Verification();
 
-        Optional<UserAccount> optionalUserAccount =
-                userAccountRepository.findByUsername(user.getUsername());
-
-        if (optionalUserAccount.isEmpty()) {
-            throw new IllegalArgumentException("No user such found!");
-        }
-
-        UserAccount userAccount = optionalUserAccount.get();
+        UserAccount userAccount =
+                userAccountRepository.findByUsername(user.getUsername())
+                        .orElseThrow(() -> new IllegalArgumentException("No user such found!"));
 
         newVerification.setUserAccount(userAccount);
         newVerification.setVerificationCode(verificationCode);
@@ -46,37 +40,24 @@ public class AccountVerificationService {
         verificationRepository.save(newVerification);
 
         emailService.verificationEmailSender(
-                user.getEmail()
-                , "Verification Code"
-                , verificationCode);
+                user.getEmail(),
+                "Verification Code",
+                verificationCode);
     }
 
     public Boolean isCodeCorrect(VerificationDto verificationDto) {
-        try {
-            Optional<Verification> userVerificationCode =
-                    verificationRepository
-                            .findByUserAccountUsername(verificationDto.getUsername());
-            if (userVerificationCode.isPresent() &&
-                    Objects.equals(
-                            userVerificationCode
-                                    .get()
-                                    .getVerificationCode(),
-                            verificationDto.getCode())
-            ) {
-                verificationDto
-                        .setUserAccountID(userVerificationCode
-                                .get()
-                                .getUserAccount()
-                                .getUserAccountId());
-                userAccountRepository
-                        .updateIsEnabled(true,
-                                verificationDto.getUserAccountID());
-                verificationRepository
-                        .deleteByUserAccountId(verificationDto.getUserAccountID());
-                return true;
-            }
-        } catch (Exception e) {
-            return false;
+        Verification userVerificationCode = verificationRepository
+                .findByUserAccountUsername(verificationDto.getUsername())
+                .orElseThrow(() -> new RuntimeException("No user found!"));
+        if (Objects.equals(
+                userVerificationCode.getVerificationCode(),
+                verificationDto.getCode())
+        ) {
+            userAccountRepository.updateIsEnabled(true,
+                    userVerificationCode.getUserAccount().getUserAccountId());
+            verificationRepository.deleteByUserAccountId
+                    (userVerificationCode.getUserAccount().getUserAccountId());
+            return true;
         }
         return false;
     }

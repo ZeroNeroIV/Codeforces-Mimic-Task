@@ -3,8 +3,11 @@ package com.zerowhisper.codeforcessmallmimic.controller;
 import com.zerowhisper.codeforcessmallmimic.dto.ProblemDto;
 import com.zerowhisper.codeforcessmallmimic.service.ProblemService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +36,7 @@ public class ProblemController {
     @PostMapping("/add")
     public ResponseEntity<?> add(@RequestBody ProblemDto problem) {
         try {
-            return ResponseEntity.ok("Created Successfully\n" + problemService.add(problem));
+            return new ResponseEntity<>(problemService.add(problem), HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -45,10 +48,12 @@ public class ProblemController {
     public ResponseEntity<?> update(@PathVariable Long problemId, @RequestBody ProblemDto problem) {
         try {
             problemService.updateProblemById(problemId, problem);
-            return ResponseEntity.ok("Updated problem "
-                    + problemId
-                    + " successfully.\n"
-                    + problemService.getProblemById(problemId)
+            return ResponseEntity.ok(Map
+                    .of("updated_problem_id",
+                            problemId,
+                            " successfully.\n",
+                            problemService.getProblemById(problemId)
+                    )
             );
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

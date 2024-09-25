@@ -3,6 +3,7 @@ package com.zerowhisper.codeforcessmallmimic.controller;
 import com.zerowhisper.codeforcessmallmimic.dto.SignUpDto;
 import com.zerowhisper.codeforcessmallmimic.service.SignUpService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,7 @@ public class SignUpController {
     public ResponseEntity<?> addNewUser(@RequestBody SignUpDto signUpDto) {
         try {
             signUpService.saveUser(signUpDto);
-            return ResponseEntity.ok("Account Created Successfully");
+            return new ResponseEntity<>("Account Created Successfully", HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.ok(e.getMessage());
         }
