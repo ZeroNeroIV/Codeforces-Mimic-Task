@@ -46,10 +46,10 @@ public class Submission {
     private String userOutput;
 
     @Column(name = "time_taken")
-    private Integer timeTaken;
+    private Double timeTaken;
 
     @Column(name = "memory_taken")
-    private Integer memoryTaken;
+    private Double memoryTaken;
 
     @PrePersist
     protected void OnCreate() {

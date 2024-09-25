@@ -57,8 +57,8 @@ public class KafkaSubmissionConsumerService {
             JsonNode rootNode = objectMapper.readTree(response);
             String statusDescription = rootNode.path("status").path("description").asText();
             String output = rootNode.path("stdout").asText(null);
-            Integer executionTime = rootNode.path("time").asInt();
-            Integer memory = rootNode.path("memory").asInt();
+            Double executionTime = rootNode.path("time").asDouble();
+            Double memory = rootNode.path("memory").asDouble();
 
             Submission submission = submissionService
                     .updateSubmission(submissionId,

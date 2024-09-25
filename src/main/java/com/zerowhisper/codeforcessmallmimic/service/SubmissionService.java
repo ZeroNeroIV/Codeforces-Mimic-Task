@@ -46,6 +46,7 @@ public class SubmissionService {
         submission.setUserAccount(userAccount);
         submission.setProblem(problem);
         submission.setSourceCode(code);
+        submission.setTimeTaken(0.0);
         submission.setSubmissionStatus("...");
         submission.setLanguageId(languageId);
         submission.setIsFinished(false);
@@ -81,7 +82,7 @@ public class SubmissionService {
 
     private String formatSubmissionResponse(Submission submission) {
         return String.format(
-                "SubmissionId: %d\nSource Code: %s\nTime Taken: %d\nMemory Taken: %d\nStatus: %s",
+                "SubmissionId: %d\nSource Code: %s\nTime Taken: %.8f\nMemory Taken: %.8f\nStatus: %s",
                 submission.getSubmissionId(),
                 submission.getSourceCode(),
                 submission.getTimeTaken(),
@@ -110,8 +111,8 @@ public class SubmissionService {
     public Submission updateSubmission(Long submissionId,
                                        String statusDescription,
                                        String output,
-                                       Integer memory,
-                                       Integer executionTime) {
+                                       Double memory,
+                                       Double executionTime) {
         Submission submission = submissionRepository.findById(submissionId)
                 .orElseThrow(() -> new RuntimeException("Submission not found for id " + submissionId));
         submission.setSubmissionStatus(statusDescription);

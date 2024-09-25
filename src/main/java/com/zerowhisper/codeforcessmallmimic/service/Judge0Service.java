@@ -18,6 +18,7 @@ public class Judge0Service {
     @Value("${judge0-api-key}")
     private String judge0ApiKey;
 
+    // TODO: Add memory and time limits to the request
     public String sendCodeToJudge0(Submission submission) throws IOException, InterruptedException {
 
         //? (Source code / Input / Output) Before Encoding
@@ -56,7 +57,7 @@ public class Judge0Service {
                                 "\"}"))
                 .build();
 
-        //? Sending Request
+        //? Sending Request and getting response
         HttpClient client = HttpClient.newHttpClient();
         String response = client
                 .send(request, HttpResponse
