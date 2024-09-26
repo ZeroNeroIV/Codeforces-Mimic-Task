@@ -59,7 +59,7 @@ public class Judge0Service {
 
         //? Sending Request and getting response
         HttpClient client = HttpClient.newHttpClient();
-        String response = client
+        String token = client
                 .send(request, HttpResponse
                         .BodyHandlers
                         .ofString()
@@ -68,7 +68,7 @@ public class Judge0Service {
                 .replace("\"}", "");
         client.close();
 
-        return response;
+        return token;
     }
 
 }

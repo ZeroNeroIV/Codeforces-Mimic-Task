@@ -46,10 +46,8 @@ public class SubmissionService {
         submission.setUserAccount(userAccount);
         submission.setProblem(problem);
         submission.setSourceCode(code);
-        submission.setTimeTaken(0.0);
         submission.setSubmissionStatus("...");
         submission.setLanguageId(languageId);
-        submission.setIsFinished(false);
 
         //? Save the submission entity
         Submission savedSubmission = submissionRepository.save(submission);
@@ -74,7 +72,7 @@ public class SubmissionService {
                         new RuntimeException("Submission with id " + submissionId + " does not exist."));
 
         if (isPendingStatus(submission)) {
-            submitResubmission(submission);
+            resubmitCode(submission);
         }
 
         return formatSubmissionResponse(submission);
@@ -91,7 +89,7 @@ public class SubmissionService {
         );
     }
 
-    private void submitResubmission(Submission submission) {
+    private void resubmitCode(Submission submission) {
         try {
             submitCode(submission.getUserAccount().getUserAccountId(),
                     submission.getProblem().getProblemId(),

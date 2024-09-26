@@ -8,6 +8,7 @@ import com.zerowhisper.codeforcessmallmimic.repository.VerificationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Random;
@@ -33,9 +34,7 @@ public class AccountVerificationService {
         newVerification.setVerificationCode(verificationCode);
 
         // 10 minutes
-        long expirationTime = 10L * 60L * 1000L;
-
-        newVerification.setExpiresAt(new Date(System.currentTimeMillis() + expirationTime));
+        newVerification.setExpiresAt(LocalDateTime.now().plusMinutes(10));
 
         verificationRepository.save(newVerification);
 
@@ -51,7 +50,8 @@ public class AccountVerificationService {
                 .orElseThrow(() -> new RuntimeException("No user found!"));
         if (Objects.equals(
                 userVerificationCode.getVerificationCode(),
-                verificationDto.getCode())
+                verificationDto.getCode()) &&
+                userVerificationCode.getExpiresAt().isAfter(LocalDateTime.now())
         ) {
             userAccountRepository.updateIsEnabled(true,
                     userVerificationCode.getUserAccount().getUserAccountId());

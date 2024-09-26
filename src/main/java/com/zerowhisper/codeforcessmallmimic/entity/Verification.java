@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -28,6 +29,6 @@ public class Verification {
     private String verificationCode;
 
     @Column(nullable = false, name = "expires_at")
-    private Date expiresAt;
+    private LocalDateTime expiresAt;
 
 }

@@ -55,5 +55,7 @@ public class Submission {
     protected void OnCreate() {
         submitted_at = LocalDateTime.now();
         isFinished = false;
+        timeTaken = 0.0;
+        memoryTaken = 0.0;
     }
 }

@@ -32,6 +32,7 @@ public class KafkaSubmissionConsumerService {
 
             Long submissionId = Long.valueOf(submissionDetails.get("submissionId").toString());
             String token = submissionDetails.get("token").toString();
+
             AsyncHttpClient client = new DefaultAsyncHttpClient();
             String response = client.prepareGet("https://judge0-ce.p.rapidapi.com/submissions/" +
                             token +
