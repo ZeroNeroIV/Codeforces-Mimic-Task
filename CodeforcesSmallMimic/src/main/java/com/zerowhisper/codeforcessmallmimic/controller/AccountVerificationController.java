@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.zerowhisper.codeforcessmallmimic.controller;
 
 import com.zerowhisper.codeforcessmallmimic.dto.VerificationDto;
@@ -25,3 +26,32 @@ public class AccountVerificationController {
         }
     }
 }
+=======
+package com.zerowhisper.codeforcessmallmimic.controller;
+
+import com.zerowhisper.codeforcessmallmimic.dto.VerificationDto;
+import com.zerowhisper.codeforcessmallmimic.service.AccountVerificationService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@AllArgsConstructor
+@RequestMapping("/account-verification")
+public class AccountVerificationController {
+    private final AccountVerificationService accountVerificationService;
+
+    @PostMapping
+    public ResponseEntity<String> verify(@RequestBody VerificationDto verificationDto) {
+        Boolean isCodeValid = accountVerificationService.isCodeCorrect(verificationDto);
+        if (isCodeValid) {
+            return ResponseEntity.ok().body("Account Verified Successfully");
+        } else {
+            return ResponseEntity.ok().body("Wrong Code Or Username");
+        }
+    }
+}
+>>>>>>> da0b5cedeaa004954e14e690979c717bc7891ad9

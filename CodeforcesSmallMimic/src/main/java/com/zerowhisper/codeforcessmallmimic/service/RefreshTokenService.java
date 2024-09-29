@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.zerowhisper.codeforcessmallmimic.service;
 
 import com.zerowhisper.codeforcessmallmimic.dto.RefreshTokenRequestDto;
@@ -36,3 +37,12 @@ public class RefreshTokenService {
     }
 
 }
+=======
+package com.zerowhisper.codeforcessmallmimic.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class RefreshTokenService {
+}
+>>>>>>> da0b5cedeaa004954e14e690979c717bc7891ad9
