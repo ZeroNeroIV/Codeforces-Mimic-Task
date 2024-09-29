@@ -5,6 +5,7 @@ import com.zerowhisper.codeforcessmallmimic.entity.UserAccount;
 import com.zerowhisper.codeforcessmallmimic.entity.Verification;
 import com.zerowhisper.codeforcessmallmimic.repository.UserAccountRepository;
 import com.zerowhisper.codeforcessmallmimic.repository.VerificationRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class AccountVerificationService {
     private final EmailService emailService;
     private final UserAccountRepository userAccountRepository;
 
-    public void sendVerificationEmail(UserAccount user) {
+    public void sendVerificationEmail(@NotNull UserAccount user) {
         String verificationCode = generateVerificationCode();
 
         Verification newVerification = new Verification();
@@ -44,7 +45,7 @@ public class AccountVerificationService {
                 verificationCode);
     }
 
-    public Boolean isCodeCorrect(VerificationDto verificationDto) {
+    public Boolean isCodeCorrect(@NotNull VerificationDto verificationDto) {
         Verification userVerificationCode = verificationRepository
                 .findByUserAccountUsername(verificationDto.getUsername())
                 .orElseThrow(() -> new RuntimeException("No user found!"));

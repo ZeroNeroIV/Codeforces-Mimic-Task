@@ -1,11 +1,12 @@
 package com.zerowhisper.codeforcessmallmimic.service;
 
+import com.zerowhisper.codeforcessmallmimic.dto.LogInResponseDto;
 import com.zerowhisper.codeforcessmallmimic.entity.RefreshToken;
 import com.zerowhisper.codeforcessmallmimic.entity.UserAccount;
 import com.zerowhisper.codeforcessmallmimic.repository.RefreshTokenRepository;
 import com.zerowhisper.codeforcessmallmimic.repository.UserAccountRepository;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,14 +15,12 @@ import java.util.Date;
 @Service
 @RequiredArgsConstructor
 public class LogInService {
-    //already constructed
-    private final UserAccountRepository userAccountService;
-    private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final UserAccountRepository userAccountService;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public String makeLogin(String email, String password) {
-        //Check if email or password is null
+    public LogInResponseDto makeLogin(@NotBlank String email, @NotBlank String password) {
+        // Check if email or password is null
         if (email == null) {
             throw new IllegalArgumentException("Email can't be empty!");
         } else if (password == null) {
@@ -44,11 +43,15 @@ public class LogInService {
         refreshToken.setExpiresAt(new Date(System.currentTimeMillis() + RefreshToken.EXPIRATION_TIME));
         refreshToken.setUserAccount(userAccount);
 
-        String accessToken = jwtService.generateAccessToken(userAccount);
-
         userAccount.setLastLoggedInAt(LocalDateTime.now());
         refreshTokenRepository.save(refreshToken);
 
-        return accessToken;
+        String accessToken = jwtService.generateAccessToken(userAccount);
+
+        LogInResponseDto logInResponseDto = new LogInResponseDto();
+        logInResponseDto.setAccessToken(accessToken);
+        logInResponseDto.setRefreshToken(refreshToken.getRefreshToken());
+
+        return logInResponseDto;
     }
 }

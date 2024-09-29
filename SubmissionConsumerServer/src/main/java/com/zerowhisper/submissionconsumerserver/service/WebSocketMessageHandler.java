@@ -37,10 +37,11 @@ public class WebSocketMessageHandler extends TextWebSocketHandler {
         sessions.remove(clientId);
 
         System.out.println("Client disconnected: " + clientId);
+        sendMessageToClient(clientId, "Welcome");
     }
 
     // Method to send a message to a specific client by client ID
-    public void sendMessageToClient(String clientId, Map<String, Object> message) {
+    public <T> void sendMessageToClient(String clientId, T message) {
         WebSocketSession session = sessions.get(clientId);
         if (session != null && session.isOpen()) {
             try {

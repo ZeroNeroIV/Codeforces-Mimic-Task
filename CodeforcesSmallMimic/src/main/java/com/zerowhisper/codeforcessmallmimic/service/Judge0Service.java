@@ -1,6 +1,7 @@
 package com.zerowhisper.codeforcessmallmimic.service;
 
 import com.zerowhisper.codeforcessmallmimic.entity.Submission;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class Judge0Service {
     private String judge0ApiKey;
 
     // TODO: Add memory and time limits to the request
-    public String sendCodeToJudge0(Submission submission) throws IOException, InterruptedException {
+    public String sendCodeToJudge0(@NotNull Submission submission) throws IOException, InterruptedException {
 
         //? (Source code / Input / Output) Before Encoding
         String source_code =

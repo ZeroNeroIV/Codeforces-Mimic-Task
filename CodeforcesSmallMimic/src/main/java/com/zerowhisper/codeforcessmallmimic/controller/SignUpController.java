@@ -18,11 +18,7 @@ public class SignUpController {
 
     @PostMapping
     public ResponseEntity<?> addNewUser(@RequestBody SignUpDto signUpDto) {
-        try {
-            signUpService.saveUser(signUpDto);
-            return new ResponseEntity<>("Account Created Successfully", HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.ok(e.getMessage());
-        }
+        signUpService.saveUser(signUpDto);
+        return new ResponseEntity<>("Account created successfully.", HttpStatus.CREATED);
     }
 }

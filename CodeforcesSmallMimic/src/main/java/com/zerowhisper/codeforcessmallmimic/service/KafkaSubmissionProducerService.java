@@ -1,5 +1,6 @@
 package com.zerowhisper.codeforcessmallmimic.service;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -15,7 +16,7 @@ public class KafkaSubmissionProducerService {
     @Value("${kafka.topic.submission.name}")
     private String topicName;
 
-    public void sendSubmission(Map<String, Object> message) {
+    public void sendSubmission(@NotNull Map<String, Object> message) {
         kafkaTemplate.send(topicName, message);
     }
 

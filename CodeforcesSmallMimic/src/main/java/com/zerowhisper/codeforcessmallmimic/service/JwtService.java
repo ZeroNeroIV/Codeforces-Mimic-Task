@@ -4,6 +4,8 @@ import com.zerowhisper.codeforcessmallmimic.entity.UserAccount;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +41,7 @@ public class JwtService {
     }
 
 
-    private SecretKey secretSigningKey(String secretKey) {
+    private SecretKey secretSigningKey(@NotBlank String secretKey) {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
@@ -48,19 +50,19 @@ public class JwtService {
     // PUBLIC
 
     //# Access Token
-    public String generateAccessToken(UserAccount userAccount) {
+    public String generateAccessToken(@NotNull UserAccount userAccount) {
         return generateToken(userAccount, "access");
     }
 
     //# Refresh Token
 
-    public String generateRefreshToken(UserAccount userAccount) {
+    public String generateRefreshToken(@NotNull UserAccount userAccount) {
         return generateToken(userAccount, "refresh");
     }
 
     // PRIVATE
 
-    private String generateToken(UserAccount userAccount, String type) {
+    private String generateToken(@NotNull UserAccount userAccount, @NotBlank String type) {
         return Jwts.builder()
                 .signWith(type.equals("access")
                         ? accessTokenSecretSigningKey()
@@ -79,59 +81,59 @@ public class JwtService {
     // PUBLIC
 
     //# Access Token
-    public Date getIssuedAtFromAccessToken(String token) {
+    public Date getIssuedAtFromAccessToken(@NotBlank String token) {
         return extractIssuedAt(token, "access");
     }
 
-    public Date getExpirationFromAccessToken(String token) {
+    public Date getExpirationFromAccessToken(@NotBlank String token) {
         return extractExpiration(token, "access");
     }
 
-    public Long getUserAccountIdFromAccessToken(String token) {
+    public Long getUserAccountIdFromAccessToken(@NotBlank String token) {
         return extractUserAccountId(token, "access");
     }
 
-    public String getUsernameFromAccessToken(String token) {
+    public String getUsernameFromAccessToken(@NotBlank String token) {
         return extractUsername(token, "access");
     }
 
     //# Refresh Token
 
-    public Date getIssuedAtFromRefreshToken(String token) {
+    public Date getIssuedAtFromRefreshToken(@NotBlank String token) {
         return extractIssuedAt(token, "refresh");
     }
 
-    public Date getExpirationFromRefreshToken(String token) {
+    public Date getExpirationFromRefreshToken(@NotBlank String token) {
         return extractExpiration(token, "refresh");
     }
 
-    public Long getUserAccountIdFromRefreshToken(String token) {
+    public Long getUserAccountIdFromRefreshToken(@NotBlank String token) {
         return extractUserAccountId(token, "refresh");
     }
 
-    public String getUsernameFromRefreshToken(String token) {
+    public String getUsernameFromRefreshToken(@NotBlank String token) {
         return extractUsername(token, "refresh");
     }
 
     // PRIVATE
 
-    private Date extractIssuedAt(String token, String type) {
+    private Date extractIssuedAt(@NotBlank String token, @NotBlank String type) {
         return extractClaims(token, type).getIssuedAt();
     }
 
-    private Date extractExpiration(String token, String type) {
+    private Date extractExpiration(@NotBlank String token, @NotBlank String type) {
         return extractClaims(token, type).getExpiration();
     }
 
-    private Long extractUserAccountId(String token, String type) {
+    private Long extractUserAccountId(@NotBlank String token, @NotBlank String type) {
         return Long.valueOf(extractClaims(token, type).getId());
     }
 
-    private String extractUsername(String token, String type) {
+    private String extractUsername(@NotBlank String token, @NotBlank String type) {
         return extractClaims(token, type).getSubject();
     }
 
-    private Claims extractClaims(String token, String type) {
+    private Claims extractClaims(@NotBlank String token, @NotBlank String type) {
         return Jwts.parser()
                 .verifyWith(type.equals("access")
                         ? accessTokenSecretSigningKey()
@@ -146,19 +148,19 @@ public class JwtService {
     // PUBLIC
 
     //# Access Token
-    public Boolean isAccessTokenValid(String token, UserAccount userAccount) {
+    public Boolean isAccessTokenValid(@NotBlank String token, @NotNull UserAccount userAccount) {
         return isTokenValid(token, userAccount, "access");
     }
 
     //# Refresh Token
 
-    public Boolean isRefreshTokenValid(String token, UserAccount userAccount) {
+    public Boolean isRefreshTokenValid(@NotBlank String token, @NotNull UserAccount userAccount) {
         return isTokenValid(token, userAccount, "refresh");
     }
 
     // PRIVATE
 
-    private Boolean isTokenValid(String token, UserAccount userAccount, String type) {
+    private Boolean isTokenValid(@NotBlank String token, @NotNull UserAccount userAccount, @NotBlank String type) {
         String username = extractUsername(token, type);
         return !isTokenExpired(token, type) && username.equals(userAccount.getUsername());
     }
@@ -168,19 +170,19 @@ public class JwtService {
     // PUBLIC
 
     //# Access Token
-    public Boolean isAccessTokenExpired(String token) {
+    public Boolean isAccessTokenExpired(@NotBlank String token) {
         return isTokenExpired(token, "access");
     }
 
     //# Refresh Token
 
-    public Boolean isRefreshTokenExpired(String token) {
+    public Boolean isRefreshTokenExpired(@NotBlank String token) {
         return isTokenExpired(token, "refresh");
     }
 
     // PRIVATE
 
-    private Boolean isTokenExpired(String token, String type) {
+    private Boolean isTokenExpired(@NotBlank String token, @NotBlank String type) {
         return extractExpiration(token, type).before(new Date());
     }
 }

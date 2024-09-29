@@ -1,19 +1,18 @@
 package com.zerowhisper.codeforcessmallmimic.service;
 
 
+import com.zerowhisper.codeforcessmallmimic.dto.SubmissionDto;
 import com.zerowhisper.codeforcessmallmimic.entity.Problem;
 import com.zerowhisper.codeforcessmallmimic.entity.Submission;
 import com.zerowhisper.codeforcessmallmimic.entity.UserAccount;
 import com.zerowhisper.codeforcessmallmimic.repository.ProblemRepository;
 import com.zerowhisper.codeforcessmallmimic.repository.SubmissionRepository;
 import com.zerowhisper.codeforcessmallmimic.repository.UserAccountRepository;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,19 +25,16 @@ public class SubmissionService {
     private final Judge0Service judge0_Service;
     private final KafkaSubmissionProducerService kafkaProducer;
 
-    public Map<String, String> submitCode(@NotNull @NotEmpty Long userId,
-                                          @NotNull @NotEmpty Long problemId,
-                                          @NotNull @NotEmpty String code,
-                                          @NotNull @NotEmpty Integer languageId)
+    public Map<String, String> submitCode(@NotNull SubmissionDto submissionDto)
             throws IOException, InterruptedException {
 
-        UserAccount userAccount = userAccountRepository.findById(userId)
+        UserAccount userAccount = userAccountRepository.findById(submissionDto.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found, Bro:("));
 
-        Problem problem = problemRepository.findById(problemId)
+        Problem problem = problemRepository.findById(submissionDto.getProblemId())
                 .orElseThrow(() -> new RuntimeException("Problem not found, Bro :> "));
 
-        if (languageId <= 0 || languageId > 98) {
+        if (submissionDto.getLanguageId() <= 0 || submissionDto.getLanguageId() > 98) {
             throw new RuntimeException("Invalid language ID!");
         }
 
@@ -47,9 +43,9 @@ public class SubmissionService {
 
         submission.setUserAccount(userAccount);
         submission.setProblem(problem);
-        submission.setSourceCode(code);
+        submission.setSourceCode(submissionDto.getCode());
         submission.setSubmissionStatus("...");
-        submission.setLanguageId(languageId);
+        submission.setLanguageId(submissionDto.getLanguageId());
 
         //? Save the submission entity
         Submission savedSubmission = submissionRepository.save(submission);
@@ -84,35 +80,23 @@ public class SubmissionService {
                 "Status", submission.getSubmissionStatus());
     }
 
-    private void resubmitCode(Submission submission) {
+    private void resubmitCode(@NotNull Submission submission) {
         try {
-            submitCode(submission.getUserAccount().getUserAccountId(),
-                    submission.getProblem().getProblemId(),
-                    submission.getSourceCode(),
-                    submission.getLanguageId());
+            SubmissionDto submissionDto = new SubmissionDto();
+            submissionDto.setUserId(submission.getUserAccount().getUserAccountId());
+            submissionDto.setProblemId(submission.getProblem().getProblemId());
+            submissionDto.setCode(submission.getSourceCode());
+            submissionDto.setLanguageId(submission.getLanguageId());
+
+            submitCode(submissionDto);
         } catch (Exception e) {
             throw new RuntimeException("Resubmission failed for submission " + submission.getSubmissionId());
         }
     }
 
-    private boolean isPendingStatus(Submission submission) {
+    private boolean isPendingStatus(@NotNull Submission submission) {
         String status = submission.getSubmissionStatus();
         return status.equals("...") || status.equals("In Queue") ||
                 status.equals("Internal Error") || status.equals("Processing");
-    }
-
-    public Submission updateSubmission(Long submissionId,
-                                       String statusDescription,
-                                       String output,
-                                       Double memory,
-                                       Double executionTime) {
-        Submission submission = submissionRepository.findById(submissionId)
-                .orElseThrow(() -> new RuntimeException("Submission not found for id " + submissionId));
-        submission.setSubmissionStatus(statusDescription);
-        submission.setUserOutput(output);
-        submission.setMemoryTaken(memory);
-        submission.setTimeTaken(executionTime);
-        submissionRepository.save(submission);
-        return submission;
     }
 }

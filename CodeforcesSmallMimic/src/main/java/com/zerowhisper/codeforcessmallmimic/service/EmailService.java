@@ -2,6 +2,8 @@ package com.zerowhisper.codeforcessmallmimic.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -14,9 +16,9 @@ public class EmailService {
     private final JavaMailSender emailSender;
 
     public void verificationEmailSender(
-            String toEmail,
-            String subject,
-            String text
+            @NotBlank String toEmail,
+            @NotBlank String subject,
+            @NotEmpty String text
     ) {
         try {
             MimeMessage message = emailSender.createMimeMessage();

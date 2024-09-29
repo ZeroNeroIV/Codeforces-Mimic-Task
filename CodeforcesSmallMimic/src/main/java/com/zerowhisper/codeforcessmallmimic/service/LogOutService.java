@@ -3,6 +3,7 @@ package com.zerowhisper.codeforcessmallmimic.service;
 import com.zerowhisper.codeforcessmallmimic.entity.UserAccount;
 import com.zerowhisper.codeforcessmallmimic.repository.RefreshTokenRepository;
 import com.zerowhisper.codeforcessmallmimic.repository.UserAccountRepository;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -12,12 +13,11 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class LogOutService {
-
     private final JwtService jwtService;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final UserAccountRepository userAccountRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public void logOut(String token) {
+    public void logOut(@NotBlank String token) {
         String accessToken = token.replace("Bearer ", "");
 
         Long userId = jwtService.getUserAccountIdFromAccessToken(accessToken);
@@ -39,7 +39,7 @@ public class LogOutService {
         }
 
         SecurityContextHolder.clearContext();
-        refreshTokenRepository.deleteAllTokensByUserId(userId);
+        refreshTokenRepository.deleteAllRefreshTokensByUserAccountId(userId);
     }
 
 

@@ -1,21 +1,21 @@
 package com.zerowhisper.codeforcessmallmimic.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "user_account")
 @RequiredArgsConstructor
 public class UserAccount implements UserDetails {
-
     @Getter
     @Column(nullable = false, name = "created_at")
     private final LocalDateTime createdAt = LocalDateTime.now();
@@ -26,6 +26,7 @@ public class UserAccount implements UserDetails {
     private Long userAccountId;
     @Setter
     @Getter
+    @Email(message = "Invalid email address")
     @Column(nullable = false, unique = true)
     private String email;
     @Setter
@@ -43,9 +44,28 @@ public class UserAccount implements UserDetails {
     @Column(name = "last_logged_in_at")
     private LocalDateTime lastLoggedInAt;
 
+    @Getter
+    @Setter
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Roles> roles=new HashSet<>();
+
+    @Getter
+    @Setter
+    @OneToMany(mappedBy = "userAccount")
+    private List<Submission> submissions = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Roles role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getRole()));
+        }
+        return authorities;
     }
 
     @Override

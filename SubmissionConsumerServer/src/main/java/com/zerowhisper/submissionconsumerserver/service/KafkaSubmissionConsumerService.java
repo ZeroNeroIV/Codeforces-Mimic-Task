@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Map;
 
@@ -21,12 +20,9 @@ public class KafkaSubmissionConsumerService {
     private final ObjectMapper objectMapper;
     private final SubmissionRepository submissionRepository;
     private final WebSocketMessageHandler webSocketMessageHandler;
-    //! For websocket and kafka
-//    private final SimpMessagingTemplate messagingTemplate;
 
     @Value("${judge0-api-key}")
     private String judge0ApiKey;
-
 
     @KafkaListener(topics = "${kafka.topic.submission.name}", groupId = "${kafka.group-id.submission.name}")
     public void listen(String message) {
@@ -50,6 +46,8 @@ public class KafkaSubmissionConsumerService {
             client.close();
 
             processJudge0Response(submissionId, response);
+
+            // Thread.sleep(1000);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -69,11 +67,24 @@ public class KafkaSubmissionConsumerService {
                     memory,
                     new String(Base64.getDecoder().decode(output)));
 
+            // TODO:
+            // if the submission is still pending, keep the token in kafka topic
+            // Otherwise, delete the message from kafka
+            if (!isPendingSubmission(status)) {
+
+
+            }
+
             notifyUser(submissionRepository.getUserAccountIdBySubmissionId(submissionId),
                     submissionRepository.getSubmissionById(submissionId));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    private boolean isPendingSubmission(String submissionStatus) {
+        return submissionStatus.equals("...") || submissionStatus.equals("In Queue") ||
+                submissionStatus.equals("Internal Error") || submissionStatus.equals("Processing");
     }
 
     // TODO: Add logic to notify the user

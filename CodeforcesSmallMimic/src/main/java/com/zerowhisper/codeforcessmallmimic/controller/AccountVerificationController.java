@@ -21,7 +21,7 @@ public class AccountVerificationController {
         if (isCodeValid) {
             return ResponseEntity.ok().body("Account Verified Successfully");
         } else {
-            return ResponseEntity.ok().body("Wrong Code Or Username");
+            return ResponseEntity.badRequest().body("Wrong Code Or Username");
         }
     }
 }

@@ -30,11 +30,10 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/log-in",
-                                "/account-verification",
-                                "/sign-up",
-                                "problem/list",
-                                "problem/show-problem/**").permitAll()
+                        .requestMatchers("/log-in", "/account-verification",
+                                "/sign-up", "/problem/show/**").permitAll()
+                        .requestMatchers("/problem/add/**", "/problem/delete/**", "/problem/update/**").hasAuthority("ADMIN")
+                        .requestMatchers("/submission/**").hasAnyAuthority("ADMIN", "USER")
                         .anyRequest().authenticated())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

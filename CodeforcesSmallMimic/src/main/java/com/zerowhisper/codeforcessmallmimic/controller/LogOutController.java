@@ -16,11 +16,7 @@ public class LogOutController {
 
     @GetMapping
     public ResponseEntity<String> logOutUser(@RequestHeader("Authorization") String token) {
-        try {
-            logOutService.logOut(token);
-            return ResponseEntity.ok("Logged out successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        logOutService.logOut(token);
+        return ResponseEntity.ok("Logged out successfully.");
     }
 }
