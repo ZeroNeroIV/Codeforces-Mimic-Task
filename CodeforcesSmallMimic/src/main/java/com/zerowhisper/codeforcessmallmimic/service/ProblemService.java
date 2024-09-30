@@ -27,7 +27,8 @@ public class ProblemService {
                 .orElseThrow(() -> new IllegalArgumentException("Problem doesn't exist."));
     }
 
-    public Problem add(@NotNull ProblemDto problem, @NotNull String accessToken) {
+    public Problem add(@NotNull ProblemDto problem, @NotNull String token) {
+        String accessToken = token.replace("Bearer ", "");
         Long creatorId = jwtService.getUserAccountIdFromAccessToken(accessToken);
 
         Problem newProblem = new Problem();
