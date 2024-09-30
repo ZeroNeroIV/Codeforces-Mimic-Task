@@ -1,5 +1,3 @@
-package com.zerowhisper.codeforcessmallmimic.service;
-
 import com.zerowhisper.codeforcessmallmimic.dto.SignUpDto;
 import com.zerowhisper.codeforcessmallmimic.entity.Roles;
 import com.zerowhisper.codeforcessmallmimic.entity.UserAccount;
