@@ -16,7 +16,7 @@ public class KafkaSubmissionProducerService {
     @Value("${kafka.topic.submission.name}")
     private String topicName;
 
-    public void sendSubmission(@NotNull Map<String, Object> message) {
+    public void sendSubmission(@NotNull String message) {
         kafkaTemplate.send(topicName, message);
     }
 

@@ -19,9 +19,9 @@ public class AccountVerificationController {
     public ResponseEntity<String> verify(@RequestBody VerificationDto verificationDto) {
         Boolean isCodeValid = accountVerificationService.isCodeCorrect(verificationDto);
         if (isCodeValid) {
-            return ResponseEntity.ok().body("Account Verified Successfully");
+            return ResponseEntity.ok().body("Account verified successfully");
         } else {
-            return ResponseEntity.badRequest().body("Wrong Code Or Username");
+            return ResponseEntity.badRequest().body("Wrong code Or username");
         }
     }
 }

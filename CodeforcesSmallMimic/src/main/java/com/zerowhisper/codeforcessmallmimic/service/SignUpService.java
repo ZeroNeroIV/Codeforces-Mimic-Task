@@ -18,7 +18,7 @@ public class SignUpService {
     private final UserAccountRepository userAccountRepository;
     private final AccountVerificationService accountVerificationService;
 
-    public void saveUser(@NotNull SignUpDto newUser) {
+    public void saveUser(SignUpDto newUser) {
         UserAccount user = new UserAccount();
         user.setEmail(newUser.getEmail());
         user.setUsername(newUser.getUsername());
@@ -26,7 +26,8 @@ public class SignUpService {
         user.setIsEnabled(false);
 
         if (newUser.getRoles().isEmpty()) {
-            user.getRoles().add(rolesRepository.findByRole("USER").get());
+            user.getRoles().add(rolesRepository.findByRole("USER")
+                    .orElseThrow(() -> new RuntimeException("Role not found.")));
         } else {
             for (String roles : newUser.getRoles()) {
                 Roles userRoles = rolesRepository.findByRole(roles.toUpperCase()).

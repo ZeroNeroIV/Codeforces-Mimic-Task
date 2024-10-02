@@ -29,6 +29,10 @@ public class Judge0Service {
                 submission.getProblem().getTestCaseInput();
         String expectedOutput =
                 submission.getProblem().getTestCaseOutput();
+        Double memoryLimit =
+                submission.getProblem().getMemoryLimit();
+        Double timeLimit =
+                submission.getProblem().getTimeLimit();
 
         //? (Source code / Input / Output) After Encoding
         String encodedSourceCode =
@@ -55,6 +59,8 @@ public class Judge0Service {
                                 ",\"source_code\":\"" + encodedSourceCode +
                                 "\",\"stdin\":\"" + encodedStdin +
                                 "\",\"expected_output\":\"" + encodedExpectedOutput +
+                                "\",\"memory_limit\":\"" + memoryLimit +
+                                "\",\"cpu_time_limit\":\"" + timeLimit +
                                 "\"}"))
                 .build();
 

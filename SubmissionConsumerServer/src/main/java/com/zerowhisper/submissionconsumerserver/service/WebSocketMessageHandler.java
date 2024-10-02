@@ -47,7 +47,7 @@ public class WebSocketMessageHandler extends TextWebSocketHandler {
             try {
                 session.sendMessage(new TextMessage(message.toString()));
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         } else {
             System.out.println("Client not connected: " + clientId);

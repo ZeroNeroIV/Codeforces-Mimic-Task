@@ -2,6 +2,7 @@ package com.zerowhisper.codeforcessmallmimic.service;
 
 import com.zerowhisper.codeforcessmallmimic.entity.Submission;
 import com.zerowhisper.codeforcessmallmimic.entity.UserAccount;
+import com.zerowhisper.codeforcessmallmimic.repository.SubmissionRepository;
 import com.zerowhisper.codeforcessmallmimic.repository.UserAccountRepository;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserAccountService implements UserDetailsService {
     private final UserAccountRepository userAccountRepository;
+    private final SubmissionRepository submissionRepository;
 
     @Override
     public UserAccount loadUserByUsername(@NotBlank String username) throws UsernameNotFoundException {
@@ -24,7 +26,6 @@ public class UserAccountService implements UserDetailsService {
     }
 
     public List<Submission> getUserSubmissions(@NotNull Long userId) {
-        return userAccountRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found, Bro :(")).getSubmissions();
+        return submissionRepository.findAllByUserAccountId(userId);
     }
 }

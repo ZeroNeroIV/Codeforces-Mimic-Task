@@ -26,6 +26,12 @@ public class SubmissionController {
                 .ok(submissionService.getSubmission(submissionId));
     }
 
+    @GetMapping("/get-submission")
+    public ResponseEntity<?> getAllSubmission() {
+        return ResponseEntity
+                .ok(submissionService.getAllSubmission());
+    }
+
     @GetMapping("/get-user-submissions/{userId}")
     public ResponseEntity<?> getUserSubmissions(@PathVariable Long userId) {
         return ResponseEntity

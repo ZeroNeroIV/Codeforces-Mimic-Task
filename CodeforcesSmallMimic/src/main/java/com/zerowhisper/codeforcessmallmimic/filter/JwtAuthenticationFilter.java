@@ -41,7 +41,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             try {
                 if (jwtService.isAccessTokenExpired(token)) {
-//                    filterChain.doFilter(request, response);
                     return;
                 }
 

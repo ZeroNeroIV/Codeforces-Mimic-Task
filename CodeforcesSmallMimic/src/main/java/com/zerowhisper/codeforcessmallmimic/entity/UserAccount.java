@@ -43,7 +43,6 @@ public class UserAccount implements UserDetails {
     @Getter
     @Column(name = "last_logged_in_at")
     private LocalDateTime lastLoggedInAt;
-
     @Getter
     @Setter
     @ManyToMany(fetch = FetchType.EAGER)
@@ -54,10 +53,10 @@ public class UserAccount implements UserDetails {
     )
     private Set<Roles> roles = new HashSet<>();
 
-    @Getter
-    @Setter
-    @OneToMany(mappedBy = "userAccount")
-    private List<Submission> submissions = new ArrayList<>();
+//    @Getter
+//    @Setter
+//    @OneToMany(mappedBy = "userAccount")
+//    private List<Submission> submissions = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

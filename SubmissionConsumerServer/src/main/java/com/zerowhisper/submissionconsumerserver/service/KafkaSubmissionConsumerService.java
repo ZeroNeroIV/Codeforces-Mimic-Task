@@ -49,7 +49,7 @@ public class KafkaSubmissionConsumerService {
 
             // Thread.sleep(1000);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            System.out.println(e.getMessage());;
         }
     }
 

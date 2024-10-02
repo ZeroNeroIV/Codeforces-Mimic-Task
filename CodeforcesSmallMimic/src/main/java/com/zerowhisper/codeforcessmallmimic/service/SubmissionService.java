@@ -1,5 +1,6 @@
 package com.zerowhisper.codeforcessmallmimic.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zerowhisper.codeforcessmallmimic.dto.SubmissionDto;
 import com.zerowhisper.codeforcessmallmimic.entity.Problem;
 import com.zerowhisper.codeforcessmallmimic.entity.Submission;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -23,6 +25,7 @@ public class SubmissionService {
     private final ProblemRepository problemRepository;
     private final Judge0Service judge0_Service;
     private final KafkaSubmissionProducerService kafkaProducer;
+    private final ObjectMapper objectMapper;
 
     public Map<String, String> submitCode(@NotNull SubmissionDto submissionDto)
             throws IOException, InterruptedException {
@@ -55,8 +58,10 @@ public class SubmissionService {
         message.put("token", token);
         message.put("submissionId", submission.getSubmissionId());
 
+        String messageString = objectMapper.writeValueAsString(message);
+
         //? Send message to Kafka
-        kafkaProducer.sendSubmission(message);
+        kafkaProducer.sendSubmission(messageString);
 
         return Map.of("Submission ID", savedSubmission.getSubmissionId().toString(),
                 "Token", token,
@@ -97,5 +102,9 @@ public class SubmissionService {
         String status = submission.getSubmissionStatus();
         return status.equals("...") || status.equals("In Queue") ||
                 status.equals("Internal Error") || status.equals("Processing");
+    }
+
+    public List<Submission> getAllSubmission() {
+        return submissionRepository.findAll();
     }
 }
