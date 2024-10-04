@@ -45,24 +45,19 @@ public class UserAccount implements UserDetails {
     private LocalDateTime lastLoggedInAt;
     @Getter
     @Setter
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, targetEntity = Roles.class)
     @JoinTable(
             name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
+            joinColumns = @JoinColumn(name = "user_account_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Roles> roles = new HashSet<>();
-
-//    @Getter
-//    @Setter
-//    @OneToMany(mappedBy = "userAccount")
-//    private List<Submission> submissions = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (Roles role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getRole()));
+            authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
         }
         return authorities;
     }

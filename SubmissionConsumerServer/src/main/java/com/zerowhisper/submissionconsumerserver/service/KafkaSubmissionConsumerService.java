@@ -26,6 +26,11 @@ public class KafkaSubmissionConsumerService {
 
     @KafkaListener(topics = "${kafka.topic.submission.name}", groupId = "${kafka.group-id.submission.name}")
     public void listen(String message) {
+        if (message == null) {
+            System.out.println("Received null message from Kafka topic");
+            return;  // Exit early if the message is null
+        }
+
         try {
             Map<?, ?> submissionDetails = objectMapper.readValue(message, Map.class);
 
@@ -46,12 +51,11 @@ public class KafkaSubmissionConsumerService {
             client.close();
 
             processJudge0Response(submissionId, response);
-
-            // Thread.sleep(1000);
         } catch (Exception e) {
-            System.out.println(e.getMessage());;
+            System.out.println("Error processing Kafka message: " + e.getMessage());
         }
     }
+
 
     private void processJudge0Response(Long submissionId, String response) {
         try {

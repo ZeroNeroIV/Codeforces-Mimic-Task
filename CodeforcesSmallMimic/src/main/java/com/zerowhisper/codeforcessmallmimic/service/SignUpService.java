@@ -5,7 +5,6 @@ import com.zerowhisper.codeforcessmallmimic.entity.Roles;
 import com.zerowhisper.codeforcessmallmimic.entity.UserAccount;
 import com.zerowhisper.codeforcessmallmimic.repository.RolesRepository;
 import com.zerowhisper.codeforcessmallmimic.repository.UserAccountRepository;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,11 +25,11 @@ public class SignUpService {
         user.setIsEnabled(false);
 
         if (newUser.getRoles().isEmpty()) {
-            user.getRoles().add(rolesRepository.findByRole("USER")
+            user.getRoles().add(rolesRepository.findByRoleName("USER")
                     .orElseThrow(() -> new RuntimeException("Role not found.")));
         } else {
             for (String roles : newUser.getRoles()) {
-                Roles userRoles = rolesRepository.findByRole(roles.toUpperCase()).
+                Roles userRoles = rolesRepository.findByRoleName(roles.toUpperCase()).
                         orElseThrow(() -> new RuntimeException("Role not found."));
 
                 user.getRoles().add(userRoles);

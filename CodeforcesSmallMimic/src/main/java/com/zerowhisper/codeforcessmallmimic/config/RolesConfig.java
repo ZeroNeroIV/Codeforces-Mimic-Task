@@ -14,17 +14,17 @@ public class RolesConfig {
 
     @Bean
     public CommandLineRunner initRoles() {
-        return args -> {
+        return _ -> {
             // Check if roles already exist
             if (rolesRepository.count() == 0) {
                 // Create and save admin role
                 Roles adminRole = new Roles();
-                adminRole.setRole("ADMIN");
+                adminRole.setRoleName("ADMIN");
                 rolesRepository.save(adminRole);
 
                 // Create and save user role
                 Roles userRole = new Roles();
-                userRole.setRole("USER");
+                userRole.setRoleName("USER");
                 rolesRepository.save(userRole);
 
                 System.out.println("Default roles created: [\"ADMIN\", \"USER\"].");

@@ -59,6 +59,9 @@ public class AccountVerificationService {
                     (userVerificationCode.getUserAccount().getUserAccountId());
             return true;
         }
+        else if (userVerificationCode.getExpiresAt().isBefore(LocalDateTime.now())) {
+            verificationRepository.delete(userVerificationCode);
+        }
         return false;
     }
 
